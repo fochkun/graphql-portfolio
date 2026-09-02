@@ -11,3 +11,47 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Profile {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String?
+  telegram    String?
+  phone       String?
+  description String
+  github      String?
+  linkedin    String?
+
+  skills      Skill[]
+  experiences Experience[]
+  projects    Project[]
+}
+
+model Skill {
+  id        Int      @id @default(autoincrement())
+  name      String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId Int
+
+  @@unique([name, profileId])
+}
+
+model Experience {
+  id           Int       @id @default(autoincrement())
+  company      String
+  position     String
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId    Int
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  url         String
+  description String?
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   Int
+}
